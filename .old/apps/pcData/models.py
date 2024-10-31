@@ -1,6 +1,8 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 import uuid
+
 
 class pcinfo(models.Model):
     id = models.UUIDField(
@@ -10,7 +12,7 @@ class pcinfo(models.Model):
         blank=True,
     )
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=False
     )
