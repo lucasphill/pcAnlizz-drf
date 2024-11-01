@@ -17,6 +17,8 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         return request.build_absolute_uri(f'/details/{obj.id}/')
 
+import django.contrib.auth.password_validation as validators
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         write_only=True,
@@ -35,6 +37,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
         required=True,
+        # min_length=8,
         help_text='Insert a strong password',
         style={'input_type': 'password', 'placeholder': 'Password'}
     )
@@ -49,16 +52,18 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'password_confirm']
     
-    def create(self, validated_data):
+    def create(self, data):
         user = User(
-            username=validated_data['username'],
-            email=validated_data['email']
+            username=data['username'],
+            email=data['email']
         )
-        user.set_password(validated_data['password_confirm'])
+        user.set_password(data['password_confirm'])
         user.save()
         return user
         
     def validate(self, validated_data):
+        validators.validate_password(validated_data['password'])
+
         if validated_data['password'] != validated_data['password_confirm']:
             raise serializers.ValidationError({"password_confirm":"Password doesn't match"})
         return validated_data

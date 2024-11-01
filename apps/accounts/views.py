@@ -5,11 +5,15 @@ from rest_framework.permissions import IsAuthenticated
 from apps.accounts.models import User
 from apps.accounts.serializers import UserDetailsSerializer, UserRegisterSerializer
 
+from apps.accounts.permissions import NotAuthenticated
 
-class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
-    """IsAuthenticated. Used to see informations of logged user."""
+
+class UserDetailsViewSet(viewsets.ModelViewSet):
+    """Need authentication. Used to show user info and update."""
+    
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'put']
     
     serializer_class = UserDetailsSerializer
 
@@ -18,9 +22,11 @@ class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
         return User.objects.filter(id=user_id)
 
 class UserRegisterViewSet(viewsets.ModelViewSet):
-    """Anyone. Used to create a new user in the system 
-    1 - add validation 'if logged' 
-    2 - add validation for password"""
+    """No need authentication, but not allowed if user is logged. 
+    Used to register a new user."""
+    
+    permission_classes = [NotAuthenticated] #Custom permission class
+    
+    http_method_names = ['post',]
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
-    http_method_names = ['post',]
