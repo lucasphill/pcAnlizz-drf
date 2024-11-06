@@ -20,6 +20,8 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user_id = self.request.user.id
         return User.objects.filter(id=user_id)
+    
+#TODO Add UserForgetPassword
 
 class UserRegisterViewSet(viewsets.ModelViewSet):
     """No need authentication, but not allowed if user is logged. 
