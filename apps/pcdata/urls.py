@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from apps.pcdata.views import PcViewSet
+from apps.pcdata.views import PcViewSet, post_data
 
 
 app_name = 'Pc Data'
@@ -13,6 +13,7 @@ router.register('pc', PcViewSet, basename='pc')
 urlpatterns = [
     path('', include(router.urls)),
     path('pc/active/', PcViewSet.as_view({'get': 'active'}), name='pc-active'),
+    path('post-data/', post_data, name='post-data'),
 ]
 
 '''   

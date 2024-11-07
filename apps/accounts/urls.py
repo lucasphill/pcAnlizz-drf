@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from apps.accounts.views import  UserDetailsViewSet, UserRegisterViewSet
+from apps.accounts.views import  UserDetailsViewSet, UserRegisterViewSet, user_login
 
 
 app_name = 'Accounts'
@@ -13,4 +13,5 @@ router.register('account', UserDetailsViewSet, basename='details')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('login/', user_login, name='login'),
 ]

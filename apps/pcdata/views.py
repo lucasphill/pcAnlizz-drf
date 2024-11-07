@@ -1,7 +1,7 @@
-from rest_framework import viewsets
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework import viewsets, status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 
 from django.db import connection
 
@@ -15,7 +15,7 @@ todos computadores ativos usuário logado
 '''
 
 class PcViewSet(viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
     http_method_names = ['get','post', 'put', 'delete']
     
@@ -101,7 +101,17 @@ class PcViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=True, url_path='data/memory', url_name='data-memory',)
     def memory(self, request, pk):
+        
+
         # queryset = pcdata.objects.raw(f"SELECT id, memory_json, timestamp FROM pcdata_pcdata WHERE pc_id='{pk}' ORDER BY timestamp DESC")
         queryset = pcdata.objects.filter(pc=pk).order_by('-timestamp')
         serializer = PcDataMemorySerializer(queryset, many=True,)
         return Response(serializer.data)
+
+import json
+@api_view(['POST'])
+def post_data(request):
+    if request.method == 'POST':
+        json = request.body
+        print(json)
+        return Response({json}, status=status.HTTP_200_OK)
