@@ -11,6 +11,7 @@ curl -X GET http://127.0.0.1:8000/pc/ -H "Authorization: Token 52e1163164e4ad0a4
 '''
 #TODO REFATORAR O CLIENT
 import requests
+import json
 from time import sleep
 from getpass import getpass
 from PyLibreHardwareMonitor import Computer
@@ -34,8 +35,8 @@ token = get_token()
 headers = {'Authorization': f'Token {token}'}
 
 response = requests.get('http://127.0.0.1:8000/pc/active', headers=headers)
-json = response.json()
-results = json
+json_data = response.json()
+results = json_data
 
 #TODO FAZER TRATAMENTO DE ERROS E FALTA DE CONEXÃO COM O SERVIDOR
 i=1
@@ -48,6 +49,7 @@ for item in results:
 
 option = int(input('Digite a opção numerica referente ao computador em uso: '))
 print(pc_list[option]['id'])
+pc_uuid = pc_list[option]['id']
 
 url = 'http://127.0.0.1:8000/post-data/'
 headers = {
@@ -55,14 +57,21 @@ headers = {
     'Content-Type': 'application/json'
 }
 
+
+# computer = Computer()
 while True:
     computer = Computer()
     data = {
-        'cpu_json': computer.cpu,
-        'gpu_json': computer.gpu,
-        'memory_json': computer.memory,
+        "cpu_json": computer.cpu,
+        "gpu_json": computer.gpu,
+        "memory_json": computer.memory,
+        "pc_uuid": pc_uuid,
     }
 
+    # print()
+    # print(type(data))
+
     response = requests.post(url, headers=headers, json=data)
-    print('.')
+    print(response)
+
     sleep(60)

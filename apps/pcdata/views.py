@@ -5,10 +5,14 @@ from rest_framework.decorators import action, api_view
 
 from django.db import connection
 
+import json
+
 from apps.pcdata.models import pcinfo, pcdata
 from apps.pcdata.serializers import PcSerializer, PcDataSerializer, PcDataCpuSerializer, PcDataGpuSerializer, PcDataMemorySerializer, PcDataCpuLoadSerializer, \
     PcDataCpuTempSerializer, PcDataGpuLoadSerializer
 from rest_framework.response import Response
+
+
 '''
 todos os computadores usuario logado
 todos computadores ativos usuário logado
@@ -40,6 +44,7 @@ class PcViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
 
+
     @action(methods=['get'], detail=True, url_path='data/cpu', url_name='data-cpu',)
     def cpu(self, request, pk):
         # queryset = pcdata.objects.raw(f"SELECT id, cpu_json, timestamp FROM pcdata_pcdata WHERE pc_id='{pk}' ORDER BY timestamp DESC")
@@ -55,6 +60,7 @@ class PcViewSet(viewsets.ModelViewSet):
         serializer = PcDataCpuLoadSerializer(queryset, many=True,)
         return Response(serializer.data)
     
+    #TODO CORRIGIR QUERY COM ID DO PC CORRETO
     #SELECT AVG((cpu_json->'Intel Core i7-9700KF'->'Load'->'CPU Total')::numeric) FROM pcdata_pcdata WHERE pc_id='5035c8dc-cd09-45c2-ba3e-050b64647cbf'
     @action(methods=['get'], detail=True, url_path='data/cpu/load/avg', url_name='data-cpu-load-avg')
     def cpu_load_avg(self, request, pk):
@@ -84,6 +90,7 @@ class PcViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+
     @action(methods=['get'], detail=True, url_path='data/gpu', url_name='data-gpu',)
     def gpu(self, request, pk):
         # queryset = pcdata.objects.raw(f"SELECT id, gpu_json, timestamp FROM pcdata_pcdata WHERE pc_id='{pk}' ORDER BY timestamp DESC")
@@ -99,6 +106,7 @@ class PcViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
    
 
+
     @action(methods=['get'], detail=True, url_path='data/memory', url_name='data-memory',)
     def memory(self, request, pk):
         
@@ -108,10 +116,25 @@ class PcViewSet(viewsets.ModelViewSet):
         serializer = PcDataMemorySerializer(queryset, many=True,)
         return Response(serializer.data)
 
-import json
+
+
 @api_view(['POST'])
 def post_data(request):
+    """Função responsavel por receber via post os valores enviados do Client no computador do usuário"""
     if request.method == 'POST':
-        json = request.body
-        print(json)
-        return Response({json}, status=status.HTTP_200_OK)
+        
+        request_data = request.body #bytes - recebe do json enviado pelo post
+        data = request_data.decode('utf8') #str
+        dict_data = json.loads(data) #dict
+
+        cpu_data = json.dumps(dict_data['cpu_json']) #str e separa o valor de cpu_json
+        gpu_data = json.dumps(dict_data['gpu_json']) #str e separa o valor de gpu_json
+        memory_data = json.dumps(dict_data['memory_json']) #str e separa o valor de memory_json
+        uuid = dict_data['pc_uuid'] #str e separa o valor de pc_uuid
+
+        query = f"""INSERT INTO pcdata_pcdata (id, cpu_json, gpu_json, memory_json, "timestamp", pc_id) VALUES (gen_random_uuid(), '{cpu_data}', '{gpu_data}', '{memory_data}', now(), '{uuid}');"""
+
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
+        return Response({request_data}, status=status.HTTP_201_CREATED)
