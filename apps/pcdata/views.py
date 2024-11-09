@@ -67,14 +67,14 @@ class PcViewSet(viewsets.ModelViewSet):
         time = self.request.query_params.get('time')
         print(time)
         #TODO Melhorar essa função para pegar a keyvalue de diferentes processadores na chave
-        get_key = f"SELECT jsonb_object_keys(cpu_json) FROM pcdata_pcdata WHERE pc_id='5035c8dc-cd09-45c2-ba3e-050b64647cbf' LIMIT 1"
+        get_key = f"SELECT jsonb_object_keys(cpu_json) FROM pcdata_pcdata WHERE pc_id='{pk}' LIMIT 1"
         with connection.cursor() as cursor:
             cursor.execute(get_key)
             results2 = cursor.fetchall()
             cpu_name = results2[0][0]
 
         if time:
-            query = query = f"SELECT AVG((cpu_json->'{cpu_name}'->'Load'->'CPU Total')::numeric) FROM pcdata_pcdata WHERE pc_id='{pk}' and timestamp > current_date - interval '{time}' day;"
+            query = f"SELECT AVG((cpu_json->'{cpu_name}'->'Load'->'CPU Total')::numeric) FROM pcdata_pcdata WHERE pc_id='{pk}' and timestamp > current_date - interval '{time}' day;"
         else:
             query = f"SELECT AVG((cpu_json->'{cpu_name}'->'Load'->'CPU Total')::numeric) FROM pcdata_pcdata WHERE pc_id='{pk}'"
 

@@ -17,7 +17,7 @@ from getpass import getpass
 from PyLibreHardwareMonitor import Computer
 
 def get_token():
-    url = 'http://127.0.0.1:8000/user/login/'
+    url = 'http://192.168.1.88:8000/user/login/'
 
     user = str(input('Username: '))
     password = getpass()
@@ -34,7 +34,7 @@ token = get_token()
 
 headers = {'Authorization': f'Token {token}'}
 
-response = requests.get('http://127.0.0.1:8000/pc/active', headers=headers)
+response = requests.get('http://192.168.1.88:8000/pc/active', headers=headers)
 json_data = response.json()
 results = json_data
 
@@ -51,7 +51,7 @@ option = int(input('Digite a opção numerica referente ao computador em uso: ')
 print(pc_list[option]['id'])
 pc_uuid = pc_list[option]['id']
 
-url = 'http://127.0.0.1:8000/post-data/'
+url = 'http://192.168.1.88:8000/post-data/'
 headers = {
     'Authorization': f'Token {token}',
     'Content-Type': 'application/json'
