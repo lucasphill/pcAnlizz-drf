@@ -69,6 +69,12 @@ class PcDataCpuTempSerializer(serializers.ModelSerializer):
         return temp
 
 
+class PcDataMemorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = pcdata
+        fields = ['id', 'memory_json', 'timestamp']
+
+
 class PcDataGpuSerializer(serializers.ModelSerializer):
     class Meta:
         model = pcdata
@@ -86,7 +92,26 @@ class PcDataGpuLoadSerializer(serializers.ModelSerializer):
         load = json[gpu_name[0]]['Load']['D3D 3D']
         return load
 
-class PcDataMemorySerializer(serializers.ModelSerializer):
+class PcDataGpuTempSerializer(serializers.ModelSerializer):
+    gpu_json_temp = serializers.SerializerMethodField()
     class Meta:
         model = pcdata
-        fields = ['id', 'memory_json', 'timestamp']
+        fields = ['id', 'gpu_json_temp', 'timestamp',]
+
+    def get_gpu_json_temp(self, obj): #Filtra os dados do json para apenas o cpu (que varia o nome para cada pc) e entrega apenas o load value
+        json = obj.gpu_json
+        gpu_name = list(json.keys())
+        temp = json[gpu_name[0]]['Load']['GPU Core']
+        return temp
+    
+class PcDataGpuMemorySerializer(serializers.ModelSerializer):
+    gpu_json_memory = serializers.SerializerMethodField()
+    class Meta:
+        model = pcdata
+        fields = ['id', 'gpu_json_memory', 'timestamp',]
+
+    def get_gpu_json_memory(self, obj): #Filtra os dados do json para apenas o cpu (que varia o nome para cada pc) e entrega apenas o load value
+        json = obj.gpu_json
+        gpu_name = list(json.keys())
+        memory = json[gpu_name[0]]['Load']['GPU Memory']
+        return memory
