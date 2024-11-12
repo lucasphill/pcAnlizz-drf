@@ -241,6 +241,7 @@ pc/<uuid:pk>/data/gpu/memory/avr/?time=30
 - Documentar com Swagger  
 - Adicionar testes automáticos  
 - Adicionar comentários melhores em todas as funções
+- Atualizar pagina de Admin
 
 User
 - Função de envio de email para validação
@@ -251,6 +252,7 @@ Data
 - Paginação nas páginas de dados
 
 Client
+- Atualizar para funcionar normalmente em ryzen
 - Fazer um client mais rapido
 - Permitir o client ficar aberto em segundo plano
 - Manter o token de autorização em cache local até fazer o logout
