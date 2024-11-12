@@ -2,10 +2,14 @@
 
 Project in development  
   
-Objective: Read pc informations like cpu load and temperature, send to a database and deliver to a frontend with django api.  
+Objective: Read PC information such as CPU load and temperature, send it to a database, and deliver it to the frontend via a Django API.  
+This project is divided into 3 parts: User, Data, and Client.  
+- **User**: An app to provide and manage user information.  
+- **Data**: An app to provide and manage inserted computers and retrieve data.  
+- **Client**: A local program running on the computer to collect and send data to the application, currently built in Python using PyLibreHardwareMonitor.  
   
 Backend: Python Django REST Framework (DRF)  
-Database used during development: PostgreSQL (Diff of default scheme below)  
+Database used during this development: PostgreSQL (Diff of default scheme below)  
 
 ### Database
 ```sql
@@ -229,4 +233,24 @@ pc/<uuid:pk>/data/gpu/load/avr/?time=30
 
 pc/<uuid:pk>/data/gpu/memory/  
 pc/<uuid:pk>/data/gpu/memory/avr/  
-pc/<uuid:pk>/data/gpu/memory/avr/?time=30  
+pc/<uuid:pk>/data/gpu/memory/avr/?time=30    
+
+***************************************************************
+
+### TODO List
+- Documentar com Swagger  
+- Adicionar testes automáticos  
+- Adicionar comentários melhores em todas as funções
+
+User
+- Função de envio de email para validação
+- Função de reset password com validação por email
+
+Data
+- Verificar alteração das consultas de .raw() para ORM do Django
+- Paginação nas páginas de dados
+
+Client
+- Fazer um client mais rapido
+- Permitir o client ficar aberto em segundo plano
+- Manter o token de autorização em cache local até fazer o logout

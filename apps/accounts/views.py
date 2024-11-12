@@ -12,7 +12,7 @@ from apps.accounts.models import User
 from apps.accounts.serializers import UserDetailsSerializer, UserRegisterSerializer
 from apps.accounts.permissions import NotAuthenticated
 
-
+#TODO Adicionar comentários nas funções e refatorar o codigo
 class UserDetailsViewSet(viewsets.ModelViewSet):
     """Need authentication. Used to show user info and update."""
     
@@ -26,7 +26,6 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
         user_id = self.request.user.id
         return User.objects.filter(id=user_id)
     
-#TODO Add UserForgetPassword
 
 class UserRegisterViewSet(viewsets.ModelViewSet):
     """No need authentication, but not allowed if user is logged. 

@@ -3,6 +3,7 @@ from apps.pcdata.models import pcinfo, pcdata
 from apps.accounts.models import User
 
 
+#TODO Limpar o codigo e adicionar comentários nas funções
 class PcSerializer(serializers.ModelSerializer):
     choices_list=('Windows 10','Windows 11','Windows 7','Linux','MacOS','Outro')
 
@@ -49,12 +50,6 @@ class PcDataCpuLoadSerializer(serializers.ModelSerializer):
         cpu_name = list(json.keys())
         load = json[cpu_name[0]]['Load']['CPU Total']
         return load
-
-    # def get_cpu_json_load_avg(self, obj): #Filtra os dados do json para apenas o cpu (que varia o nome para cada pc) e entrega apenas o load value
-    #     json = obj.cpu_json
-    #     cpu_name = list(json.keys())
-    #     load = json[cpu_name[0]]['Load']['CPU Total']
-    #     return load
     
 class PcDataCpuTempSerializer(serializers.ModelSerializer):
     cpu_json_temp_pack = serializers.SerializerMethodField()

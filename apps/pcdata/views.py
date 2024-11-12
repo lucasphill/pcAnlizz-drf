@@ -12,7 +12,7 @@ from apps.pcdata.serializers import PcSerializer, PcDataSerializer, PcDataCpuSer
     PcDataCpuTempSerializer, PcDataGpuLoadSerializer, PcDataGpuTempSerializer, PcDataGpuMemorySerializer
 from rest_framework.response import Response
 
-
+#TODO Adicionar comentários nas funções e actions e limpar o codigo
 def get_cpu_name(pk):
     get_key = f"SELECT jsonb_object_keys(cpu_json) FROM pcdata_pcdata WHERE pc_id='{pk}' LIMIT 1"
     with connection.cursor() as cursor:

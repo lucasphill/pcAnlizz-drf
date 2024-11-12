@@ -10,6 +10,7 @@ app_name = 'Accounts'
 router = routers.DefaultRouter()
 router.register('register', UserRegisterViewSet, basename='register')
 router.register('account', UserDetailsViewSet, basename='details')
+#TODO Adicionar rota "account/resetpassword/"
 
 urlpatterns = [
     path('', include(router.urls)),
